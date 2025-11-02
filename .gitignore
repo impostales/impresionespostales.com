@@ -6,3 +6,5 @@
 /.react-router/
 /build/
 /temp/
+
+.env.local
