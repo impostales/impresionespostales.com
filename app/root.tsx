@@ -6,6 +6,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -42,13 +43,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export function loader() {
+  return {
+    apiKey: process.env.VITE_PUBLIC_POSTHOG_KEY || '',
+    apiHost: process.env.VITE_PUBLIC_POSTHOG_HOST || '',
+  }
+}
+
 export default function App() {
-  console.log(import.meta.env)
+  const { apiKey, apiHost } = useLoaderData<typeof loader>()
   return (
     <PostHogProvider
-      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+      apiKey={apiKey}
       options={{
-        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+        api_host: apiHost,
         defaults: '2025-05-24',
         capture_exceptions: true, // This enables capturing exceptions using Error Tracking, set to false if you don't want this
         debug: import.meta.env.MODE === "development",
