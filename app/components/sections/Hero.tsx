@@ -34,11 +34,17 @@ export function Hero() {
             </div>
           </div>
           <div className="relative">
-            <div className="aspect-[16/10] w-full overflow-hidden rounded-xl border border-border bg-muted" aria-hidden>
-              {/* Placeholder visual: replace with industry-related collage in V2 */}
-              <div className="h-full w-full grid place-items-center text-muted-foreground">
-                Imagen de portafolio (placeholder)
-              </div>
+            <div className="mx-auto sm:aspect-[16/10] aspect-[9/12] w-full overflow-hidden rounded-xl border border-border bg-muted" aria-hidden>
+              <video
+                className="h-full w-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+              >
+                <source src="/assets/hero.mp4" type="video/mp4" />
+              </video>
             </div>
           </div>
         </div>
@@ -46,5 +52,4 @@ export function Hero() {
     </section>
   );
 }
-
 
