@@ -26,6 +26,9 @@ RUN corepack install
 COPY ./prisma /app/prisma
 COPY --from=build-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
-RUN addgroup -S nodejs && adduser -S nodejs -G nodejs
+RUN addgroup -S nodejs \
+  && adduser -S nodejs -G nodejs \
+  && mkdir -p /app/temp/uploads \
+  && chown -R nodejs:nodejs /app/temp
 USER nodejs
 CMD ["pnpm", "run", "start"]
