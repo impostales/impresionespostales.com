@@ -217,7 +217,7 @@ Subsections
 - Complex animations or interactive elements
 - Multi-language support
 - Advanced analytics dashboard
-- Backend quote management system
+- Advanced backend quote management system (dashboards, admin workflows)
 - Customer portal functionality
 - Payment processing integration
 

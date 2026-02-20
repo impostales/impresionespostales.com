@@ -41,6 +41,7 @@ export async function action({ request }: { request: Request }) {
     await saveQuote({ ...rest, referenceImagePath });
     return { ok: true };
   } catch (e) {
+    console.error(e);
     return { ok: false, fieldErrors: {}, formError: "No se pudo guardar tu solicitud. Intenta de nuevo." };
   }
 }

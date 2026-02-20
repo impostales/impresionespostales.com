@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { prisma } from "~/server/db";
 
 type Quote = {
   name: string;
@@ -13,29 +14,32 @@ type Quote = {
   facebook?: string;
   tiktok?: string;
   referenceImagePath?: string;
-  createdAt: string;
 };
 
 const DATA_DIR = path.join(process.cwd(), "temp");
-const DATA_FILE = path.join(DATA_DIR, "quotes.json");
 
-async function ensureDataFile() {
-  try {
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.access(DATA_FILE);
-  } catch {
-    await fs.writeFile(DATA_FILE, "[]", "utf-8");
-  }
+function toNullableString(value?: string) {
+  if (!value) return null;
+  const trimmed = value.trim();
+  return trimmed.length ? trimmed : null;
 }
 
-export async function saveQuote(input: Omit<Quote, "createdAt">) {
-  await ensureDataFile();
-  const raw = await fs.readFile(DATA_FILE, "utf-8");
-  const list: Quote[] = JSON.parse(raw || "[]");
-  const quote: Quote = { ...input, createdAt: new Date().toISOString() };
-  list.push(quote);
-  await fs.writeFile(DATA_FILE, JSON.stringify(list, null, 2), "utf-8");
-  return quote;
+export async function saveQuote(input: Quote) {
+  return prisma.quoteSubmission.create({
+    data: {
+      name: input.name,
+      company: toNullableString(input.company),
+      email: input.email,
+      phone: input.phone,
+      product: input.product,
+      quantity: input.quantity,
+      notes: toNullableString(input.notes),
+      instagram: toNullableString(input.instagram),
+      facebook: toNullableString(input.facebook),
+      tiktok: toNullableString(input.tiktok),
+      referenceImagePath: toNullableString(input.referenceImagePath),
+    },
+  });
 }
 
 export async function saveUploadedImage(file: File | null): Promise<string | undefined> {
@@ -49,5 +53,4 @@ export async function saveUploadedImage(file: File | null): Promise<string | und
   await fs.writeFile(fullPath, buffer);
   return path.relative(process.cwd(), fullPath);
 }
-
 

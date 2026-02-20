@@ -1,87 +1,85 @@
-# Welcome to React Router!
+# Impresiones Postales Landing
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Landing page + lead capture form built with React Router v7, Tailwind CSS, and Prisma/PostgreSQL.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Requirements
 
-## Features
+- Node.js 20+
+- pnpm 10+
+- PostgreSQL (or Prisma Dev local Postgres)
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
-
-## Getting Started
-
-### Installation
-
-Install the dependencies:
+## Install
 
 ```bash
-npm install
+pnpm install
 ```
 
-### Development
+## Database Setup
 
-Start the development server with HMR:
+This project stores quote form submissions in PostgreSQL via Prisma.
+
+1. Configure `DATABASE_URL` in `.env`.
+   - Start from: `cp .env.example .env`
+2. Generate Prisma Client and run migrations:
 
 ```bash
-npm run dev
+pnpm prisma:generate
+pnpm prisma:migrate:dev --name init_quote_submissions
 ```
 
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
+### Quick local DB with Prisma Dev
 
 ```bash
-npm run build
+pnpm prisma:dev
+pnpm prisma:dev:sync-env
+pnpm prisma:migrate:dev --name init_quote_submissions
 ```
 
-## Deployment
+`pnpm prisma:dev:sync-env` writes the active Prisma Dev `prisma+postgres://...` URL to `.env`. The app and Prisma CLI are configured to use it correctly.
 
-### Docker Deployment
+If you accidentally run `pnpm primsa:dev`, this repo includes a compatibility alias and will still start Prisma Dev.
 
-To build and run using Docker:
+## Run in Development
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+pnpm dev
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+App runs at `http://localhost:5173`.
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
+## Typecheck
 
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+```bash
+pnpm typecheck
 ```
 
-## Styling
+## Build and Run Production
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+```bash
+pnpm build
+pnpm start
+```
 
----
+## Production DB Migrations
 
-Built with ❤️ using React Router.
+Before starting a new production release:
+
+1. Set production `DATABASE_URL`.
+2. Apply committed migrations:
+
+```bash
+pnpm prisma:migrate:deploy
+pnpm prisma:generate
+```
+
+3. Deploy and start app (`pnpm build && pnpm start`).
+
+## Data Model
+
+Form submissions are stored in the `QuoteSubmission` table (see `prisma/schema.prisma`).
+
+Reference images uploaded from the form are stored on disk under `temp/uploads/`; only the stored path is saved in the database.
+
+## Additional Docs
+
+- `docs/database.md` for DB setup and migration workflow.
