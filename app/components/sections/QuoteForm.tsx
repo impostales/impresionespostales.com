@@ -36,14 +36,15 @@ export function QuoteForm() {
   return (
     <section id="cotizar" className="py-16 sm:py-24">
       <div className="container mx-auto px-4">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">¿Quieres una cotización rápida?</h2>
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary/80">Cotización</p>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">¿Quieres una cotización rápida?</h2>
           <p className="mt-4 text-muted-foreground">
             Completa el formulario y uno de nuestros asesores se comunicará contigo para ayudarte a definir materiales, tiempos y precios.
           </p>
         </div>
 
-        <div className="mx-auto mt-10 max-w-2xl rounded-xl border border-border bg-card p-6">
+        <div className="paper-panel mx-auto mt-10 max-w-3xl p-6 sm:p-8">
           {actionData && !actionData.ok && actionData.formError && (
             <div className="mb-4 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-foreground">
               {actionData.formError}
@@ -195,5 +196,4 @@ export function validateQuoteForm(formData: FormData) {
     fieldErrors,
   };
 }
-
 
