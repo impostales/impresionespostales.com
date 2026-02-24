@@ -13,6 +13,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum QuoteStatus {
+  pending
+  reviewed
+}
+
 model QuoteSubmission {
   id                 String   @id @default(cuid())
   name               String
@@ -26,7 +31,9 @@ model QuoteSubmission {
   facebook           String?
   tiktok             String?
   referenceImagePath String?
+  status             QuoteStatus @default(pending)
   createdAt          DateTime @default(now())
 
+  @@index([status])
   @@index([createdAt])
 }
