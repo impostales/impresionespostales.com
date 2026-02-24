@@ -21,7 +21,7 @@ export function Hero() {
                 ¿Planeas <span className="text-primary">imprimir</span>? Llegaste al lugar correcto.
               </h1>
               <p className="max-w-xl text-base text-muted-foreground sm:text-lg">
-                Diseñamos y producimos piezas impresas de alto impacto para marcas, instituciones y emprendimientos con acabados finos y tiempos reales.
+                Creamos material impreso que comunica la esencia de tu marca, con acabados finos y tiempos reales para empresas, instituciones y emprendimientos que quieren destacar.
               </p>
             </div>
 
