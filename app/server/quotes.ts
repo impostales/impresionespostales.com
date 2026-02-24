@@ -60,6 +60,7 @@ type ListAdminQuotesInput = {
   pageSize: number;
   search?: string;
   product?: string;
+  status?: "pending" | "reviewed" | "all";
   sort?: "oldest" | "newest";
 };
 
@@ -68,12 +69,14 @@ export async function listAdminQuotes(input: ListAdminQuotesInput) {
   const pageSize = Math.min(100, Math.max(1, input.pageSize));
   const search = input.search?.trim() ?? "";
   const product = input.product?.trim() ?? "";
+  const status = input.status === "reviewed" || input.status === "all" ? input.status : "pending";
   const sort = input.sort === "newest" ? "newest" : "oldest";
   const searchNumber = Number(search);
   const searchDate = search ? new Date(search) : null;
 
   const where: Prisma.QuoteSubmissionWhereInput = {
     ...(product ? { product } : {}),
+    ...(status !== "all" ? { status } : {}),
     ...(search
       ? {
           OR: [

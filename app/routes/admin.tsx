@@ -24,6 +24,7 @@ type LoaderData =
       hasNextPage: boolean;
       search: string;
       product: string;
+      status: "pending" | "reviewed" | "all";
       sort: "oldest" | "newest";
     };
 
@@ -37,8 +38,11 @@ function parseAdminQuery(request: Request) {
   const pageSize = 25;
   const search = (url.searchParams.get("q") || "").trim();
   const product = (url.searchParams.get("product") || "").trim();
+  const statusParam = (url.searchParams.get("status") || "").trim();
+  const status: "pending" | "reviewed" | "all" =
+    statusParam === "reviewed" || statusParam === "all" ? statusParam : "pending";
   const sort: "oldest" | "newest" = url.searchParams.get("sort") === "newest" ? "newest" : "oldest";
-  return { page, pageSize, search, product, sort };
+  return { page, pageSize, search, product, status, sort };
 }
 
 export async function loader({ request }: { request: Request }): Promise<LoaderData> {
@@ -62,6 +66,7 @@ export async function loader({ request }: { request: Request }): Promise<LoaderD
     hasNextPage: data.hasNextPage,
     search: query.search,
     product: query.product,
+    status: query.status,
     sort: query.sort,
   };
 }
@@ -154,6 +159,7 @@ export default function AdminRoute() {
   const searchParams = new URLSearchParams();
   if (data.search) searchParams.set("q", data.search);
   if (data.product) searchParams.set("product", data.product);
+  if (data.status !== "pending") searchParams.set("status", data.status);
   searchParams.set("sort", toggleSort);
   searchParams.set("page", "1");
   const sortHref = `/admin?${searchParams.toString()}`;
@@ -178,7 +184,7 @@ export default function AdminRoute() {
             </Form>
           </div>
 
-          <Form method="get" className="mt-6 grid gap-3 sm:grid-cols-[1fr_220px_auto]">
+          <Form method="get" className="mt-6 grid gap-3 sm:grid-cols-[1fr_220px_220px_auto]">
             <div className="space-y-1">
               <Label htmlFor="q">Filtro de texto (todos los campos)</Label>
               <Input id="q" name="q" defaultValue={data.search} placeholder="Nombre, email, teléfono, estado, notas..." />
@@ -197,6 +203,19 @@ export default function AdminRoute() {
                     {product}
                   </option>
                 ))}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="status">Estado</Label>
+              <select
+                id="status"
+                name="status"
+                defaultValue={data.status}
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
+              >
+                <option value="pending">Pendiente</option>
+                <option value="reviewed">Revisada</option>
+                <option value="all">Todas</option>
               </select>
             </div>
             <input type="hidden" name="sort" value={data.sort} />
@@ -243,6 +262,7 @@ export default function AdminRoute() {
                     sort: data.sort,
                     q: data.search,
                     product: data.product,
+                    status: data.status,
                   }).toString()}`;
                   return (
                     <tr key={quote.id} className="border-t border-border/70 align-top">
@@ -270,10 +290,14 @@ export default function AdminRoute() {
                           <Form method="post">
                             <input type="hidden" name="intent" value="set-status" />
                             <input type="hidden" name="quoteId" value={quote.id} />
-                            <input type="hidden" name="status" value="reviewed" />
+                            <input
+                              type="hidden"
+                              name="status"
+                              value={quote.status === "pending" ? "reviewed" : "pending"}
+                            />
                             <input type="hidden" name="from" value={from} />
-                            <Button type="submit" variant="secondary" size="sm" disabled={quote.status === "reviewed"}>
-                              Marcar revisada
+                            <Button type="submit" variant="secondary" size="sm">
+                              {quote.status === "pending" ? "Marcar revisada" : "Marcar pendiente"}
                             </Button>
                           </Form>
                           <Link
@@ -304,6 +328,7 @@ export default function AdminRoute() {
                     sort: data.sort,
                     q: data.search,
                     product: data.product,
+                    status: data.status,
                   }).toString()}`}
                 >
                   Anterior
@@ -319,6 +344,7 @@ export default function AdminRoute() {
                     sort: data.sort,
                     q: data.search,
                     product: data.product,
+                    status: data.status,
                   }).toString()}`}
                 >
                   Siguiente
