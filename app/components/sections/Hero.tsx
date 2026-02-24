@@ -56,7 +56,15 @@ export function Hero() {
             </div>
 
             <div className="float-soft absolute bottom-8 left-0 w-[58%] overflow-hidden rounded-2xl border border-border/80 bg-card shadow-lg [animation-delay:1.3s]">
-              <img src="/assets/product_2.jpg" alt="Producto impreso" className="h-44 w-full object-cover sm:h-48" />
+              <video
+                src="/assets/hero.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="h-44 w-full object-cover sm:h-48"
+                aria-label="Video de muestra de impresión"
+              />
             </div>
 
             <div className="absolute left-[38%] top-[50%] w-[44%] -translate-y-1/2 rounded-2xl border border-primary/20 bg-card/95 p-4 shadow-lg">
